@@ -166,12 +166,13 @@ class WhisperWriterApp(QObject):
         self.use_llm = use_llm
         self.is_instruction_mode = is_instruction_mode
         
-        ConfigManager.console_print(f"Deactivation called - use_llm: {use_llm}, is_instruction_mode: {is_instruction_mode}")
-        ConfigManager.console_print(f"Recording mode: {ConfigManager.get_config_value('recording_options', 'recording_mode')}")
-        ConfigManager.console_print(f"Result thread running: {self.result_thread and self.result_thread.isRunning()}")
+        ConfigManager.console_print(f"[DEBUG] Deactivation called - use_llm: {use_llm}, is_instruction_mode: {is_instruction_mode}")
+        ConfigManager.console_print(f"[DEBUG] Recording mode: {ConfigManager.get_config_value('recording_options', 'recording_mode')}")
+        ConfigManager.console_print(f"[DEBUG] Result thread running: {self.result_thread and self.result_thread.isRunning()}")
         
         if ConfigManager.get_config_value('recording_options', 'recording_mode') == 'hold_to_record':
             if self.result_thread and self.result_thread.isRunning():
+                ConfigManager.console_print(" ")
                 ConfigManager.console_print("Stopping recording...")
                 self.result_thread.stop_recording()
 

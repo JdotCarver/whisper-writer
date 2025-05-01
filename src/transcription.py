@@ -118,16 +118,16 @@ def get_optimal_device():
     
     # Device selection logic
     if hasattr(torch.backends, 'mps') and torch.backends.mps.is_available():
-        ConfigManager.console_print("Using Apple Silicon GPU (MPS)")
+        ConfigManager.console_print("[DEBUG] Using Apple Silicon GPU (MPS)")
         return "mps"
     elif torch.cuda.is_available():
-        ConfigManager.console_print("Using NVIDIA GPU (CUDA)")
+        ConfigManager.console_print("[DEBUG] Using NVIDIA GPU (CUDA)")
         return "cuda"
     elif hasattr(torch, 'hip') and torch.hip.is_available():
-        ConfigManager.console_print("Using AMD GPU (ROCm)")
+        ConfigManager.console_print("[DEBUG] Using AMD GPU (ROCm)")
         return "rocm"
     else:
-        ConfigManager.console_print("Using CPU")
+        ConfigManager.console_print("[DEBUG] Using CPU")
         return "cpu"
 
 def create_local_model():
@@ -175,7 +175,7 @@ def create_local_model():
 
         if compute_type == 'int8':
             device = 'cpu'
-            ConfigManager.console_print('Using int8 quantization, forcing CPU usage.')
+            ConfigManager.console_print('[DEBUG] Using int8 quantization, forcing CPU usage.')
         else:
             device = local_model_options.get('device', 'auto')
             if device == 'auto':
@@ -273,7 +273,7 @@ def transcribe_api(audio_data):
     provider = api_options['provider']
     model = api_options['model']
     
-    ConfigManager.console_print(f"\n=== Using {provider.upper()} API Service ===")
+    ConfigManager.console_print(f"\n=== [DEBUG] Using {provider.upper()} API Service ===")
     ConfigManager.console_print(f"Selected model: {model}")
     
     if provider == 'openai':
@@ -296,7 +296,7 @@ def transcribe_with_openai(audio_data, api_options):
             
         # Use base_url from config, or fallback to OpenAI's API
         base_url = api_options.get('base_url') or 'https://api.openai.com/v1'
-        ConfigManager.console_print(f"Using OpenAI endpoint: {base_url}")
+        ConfigManager.console_print(f"[DEBUG] Using OpenAI endpoint: {base_url}")
         
         headers = {
             "Authorization": f"Bearer {api_key}"
@@ -361,7 +361,7 @@ def transcribe_with_deepgram(audio_data, api_options):
         
         # Always use Deepgram's API URL
         DEEPGRAM_BASE_URL = "https://api.deepgram.com/v1/listen"
-        ConfigManager.console_print(f"Using Deepgram endpoint: {DEEPGRAM_BASE_URL}")
+        ConfigManager.console_print(f"[DEBUG] Using Deepgram endpoint: {DEEPGRAM_BASE_URL}")
         ConfigManager.console_print(f"Model parameters: {params}")
         
         ConfigManager.console_print("Sending request to Deepgram API...")
@@ -437,15 +437,14 @@ def post_process_transcription(transcription):
     
     # Load and apply find/replace rules
     rules_file = ConfigManager.get_config_value('post_processing', 'find_replace_file')
-    print(f"Find/replace file path: {rules_file}")  # Debug print
     if rules_file:
-        print(f"Loading rules from: {rules_file}")
-        if os.path.exists(rules_file):  # Debug print
-            print(f"File exists at: {rules_file}")
+        print(f"[DEBUG] Loading Find/replace rules from: {rules_file}")
+        if os.path.exists(rules_file):
+            print(f"[DEBUG] File exists at: {rules_file}")
         else:
-            print(f"File not found at: {rules_file}")
+            print(f"[WARNING] File not found at: {rules_file}")
         rules = TextProcessor.load_find_replace_rules(rules_file)
-        print(f"Loaded rules: {rules}")  # Debug print
+        print(f"[DEBUG] Loaded rules: {rules}")
         transcription = TextProcessor.apply_find_replace_rules(transcription, rules)
     
     # Apply other post-processing options
@@ -467,17 +466,17 @@ def transcribe(audio_data, local_model=None):
             return ''
 
         if ConfigManager.get_config_value('model_options', 'use_api'):
-            ConfigManager.console_print("Using OpenAI Whisper API for transcription")
+            ConfigManager.console_print("[DEBUG] Using OpenAI Whisper API for transcription")
             transcription = transcribe_api(audio_data)
         else:
             if not local_model:
                 local_model = create_local_model()
             model_name = ConfigManager.get_config_value('model_options', 'local', 'model')
             device = ConfigManager.get_config_value('model_options', 'local', 'device')
-            ConfigManager.console_print(f"Using local Whisper model: {model_name} on {device}")
+            ConfigManager.console_print(f"[DEBUG] Using local Whisper model: {model_name} on {device}")
             transcription = transcribe_local(audio_data, local_model)
     else:
-        ConfigManager.console_print("Using OpenAI Whisper API for transcription (faster-whisper not available)")
+        ConfigManager.console_print("[DEBUG] Using OpenAI Whisper API for transcription (faster-whisper not available)")
         transcription = transcribe_api(audio_data)
 
     return post_process_transcription(transcription)

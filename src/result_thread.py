@@ -82,6 +82,7 @@ class ResultThread(QThread):
             self.mutex.unlock()
 
             self.statusSignal.emit('recording', self.use_llm)
+            ConfigManager.console_print(' ')
             ConfigManager.console_print('Recording...')
             audio_data = self._record_audio()
 
@@ -94,6 +95,7 @@ class ResultThread(QThread):
 
             self.is_transcribing = True  # Set transcribing flag
             self.statusSignal.emit('transcribing', self.use_llm)
+            ConfigManager.console_print(' ')
             ConfigManager.console_print('Transcribing...')
 
             # Time the transcription process
@@ -102,7 +104,10 @@ class ResultThread(QThread):
             end_time = time.time()
 
             transcription_time = end_time - start_time
-            ConfigManager.console_print(f'Transcription completed in {transcription_time:.2f} seconds. Post-processed line: {result}')
+            ConfigManager.console_print(f'Transcription completed in {transcription_time:.2f} seconds.')
+            ConfigManager.console_print(f'')
+            ConfigManager.console_print(f'Post-processed line:')
+            ConfigManager.console_print(f'  {result}')
 
             if not self.is_running:
                 return
@@ -209,7 +214,7 @@ class ResultThread(QThread):
         audio_data = np.array(recording, dtype=np.int16)
         duration = len(audio_data) / self.sample_rate
 
-        ConfigManager.console_print(f'Recording finished. Size: {audio_data.size} samples, Duration: {duration:.2f} seconds')
+        ConfigManager.console_print(f'[DEBUG] Recording finished. Size: {audio_data.size} samples, Duration: {duration:.2f} seconds')
 
         min_duration_ms = recording_options.get('min_duration') or 100
         if (duration * 1000) < min_duration_ms:
