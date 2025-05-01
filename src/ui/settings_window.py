@@ -363,6 +363,8 @@ class SettingsWindow(BaseWindow):
 
     def save_settings(self):
         """Save the settings to the config file and keyring."""
+        ConfigManager.console_print("")
+        ConfigManager.console_print("Save Settings and Reload triggered.")
         ConfigManager.console_print("Saving settings...")
         self.iterate_settings(self.save_setting)
 
@@ -401,17 +403,22 @@ class SettingsWindow(BaseWindow):
 
     def save_setting(self, widget, category, sub_category, key, meta):
         """Save a single setting to the config."""
+
+        if not key:
+            ConfigManager.console_print(f"[INFO] No setting key provided for category '{category}'. Nothing was saved.")
+            return
+
         if isinstance(widget, QWidget) and widget.layout():
             layout = widget.layout()
             text_edit = None
             file_edit = None
-            
-            # Find both the text edit and file edit widgets
+
+            # Attempt to find QTextEdit or QLineEdit in the layout
             for i in range(layout.count()):
                 item = layout.itemAt(i)
                 if isinstance(item.widget(), QTextEdit):
                     text_edit = item.widget()
-                elif isinstance(item.widget(), QLineEdit):  # Direct QLineEdit check
+                elif isinstance(item.widget(), QLineEdit):
                     file_edit = item.widget()
                 elif isinstance(item.layout(), QHBoxLayout):
                     for j in range(item.layout().count()):
@@ -419,37 +426,46 @@ class SettingsWindow(BaseWindow):
                         if isinstance(file_widget, QLineEdit):
                             file_edit = file_widget
                             break
-            
-            # Save both the text content and file path
+
+            # Save the QTextEdit content if found
             if text_edit:
                 value = text_edit.toPlainText()
-                ConfigManager.console_print(f"Saving {category}.{key} with value: {value}")
+                ConfigManager.console_print(f"[DEBUG] Saving setting: {category}.{key}")
+                ConfigManager.console_print(f"        Value: {value!r}")
                 ConfigManager.set_config_value(value, category, key)
-            
+
+            # Save the file path from QLineEdit if found
             if file_edit:
                 file_path = file_edit.text()
                 if category == 'post_processing' and key == 'find_replace_file':
-                    # Direct save for find/replace file path
-                    ConfigManager.console_print(f"Saving {category}.{key} with value: {file_path}")
+                    ConfigManager.console_print(f"[DEBUG] Saving setting: {category}.{key}")
+                    ConfigManager.console_print(f"        File Path: {file_path!r}")
                     ConfigManager.set_config_value(file_path, category, key)
                 else:
-                    # For other file paths that use the _file_path suffix
-                    ConfigManager.console_print(f"Saving {category}.{key}_file_path with value: {file_path}")
+                    ConfigManager.console_print(f"[DEBUG] Saving setting: {category}.{key}_file_path")
+                    ConfigManager.console_print(f"        File Path: {file_path!r}")
                     ConfigManager.set_config_value(file_path, category, f"{key}_file_path")
-            
+
             return
 
-        # Special handling for sound device combo box
+        # Special handling for sound device selection
         if category == 'recording_options' and key == 'sound_device' and isinstance(widget, QComboBox):
-            value = widget.currentData()  # Get the device index
-            ConfigManager.console_print(f"Saving sound device selection: {value} ({widget.currentText()})")
-        else:
-            # Handle regular widgets
-            value = self.get_widget_value_typed(widget, meta.get('type'))
-        
+            value = widget.currentData()
+            label = widget.currentText()
+            ConfigManager.console_print(f"[DEBUG] Saving sound device selection: {value} ({label})")
+            ConfigManager.set_config_value(value, category, key)
+            return
+
+        # Default handling for other widget types
+        value = self.get_widget_value_typed(widget, meta.get('type'))
+
         if sub_category:
+            ConfigManager.console_print(f"[DEBUG] Saving setting: {category}.{sub_category}.{key}")
+            ConfigManager.console_print(f"        Value: {value!r}")
             ConfigManager.set_config_value(value, category, sub_category, key)
         else:
+            ConfigManager.console_print(f"[DEBUG] Saving setting: {category}.{key}")
+            ConfigManager.console_print(f"        Value: {value!r}")
             ConfigManager.set_config_value(value, category, key)
 
     def reset_settings(self):
