@@ -131,6 +131,7 @@ def get_optimal_device():
         return "cpu"
 
 def create_local_model():
+    ConfigManager.console_print('') #New line for proper UI when reloading
     """Create a local model using Whisper."""
     if not HAS_FASTER_WHISPER and not HAS_VOSK:
         ConfigManager.console_print("Neither Faster Whisper nor Vosk available, defaulting to API mode")
