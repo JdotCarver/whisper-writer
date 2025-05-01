@@ -1,0 +1,67 @@
+llm_post_processing:
+  api_type: chatgpt
+  claude_api_key: null
+  cleanup_model: gpt-4o-mini
+  enabled: false
+  gemini_api_key: null
+  groq_api_key: null
+  instruction_model: gpt-4o-mini
+  instruction_system_message: You are an AI assistant. Interpret the user's text as
+    instructions and respond appropriately. Be concise and direct in your responses.
+  instruction_system_message_file_path: ''
+  openai_api_key: null
+  system_prompt: You are a helpful assistant that cleans up transcribed text. Fix
+    any grammar, punctuation, or formatting issues while maintaining the original
+    meaning.
+  system_prompt_file_path: ''
+  temperature: 0.3
+  text_cleanup_system_message: You are a helpful assistant that cleans up selected
+    text. Fix any spelling, grammar, or formatting issues while preserving the original
+    meaning.
+  text_cleanup_system_message_file_path: ''
+misc:
+  hide_status_window: false
+  noise_on_completion: true
+  pause_media_during_recording: false
+  print_to_terminal: true
+model_options:
+  api:
+    base_url: https://api.openai.com/v1
+    deepgram_transcription_api_key: null
+    groq_transcription_api_key: null
+    model: whisper-1
+    openai_transcription_api_key: null
+    provider: openai
+  common:
+    initial_prompt: null
+    language: null
+    temperature: 0.0
+  local:
+    compute_type: default
+    condition_on_previous_text: true
+    device: cuda
+    model: large-v3-turbo
+    model_path: null
+    vad_filter: false
+  use_api: false
+post_processing:
+  add_trailing_space: true
+  clipboard_threshold: 1000
+  find_replace_file: ''
+  input_method: pynput
+  remove_capitalization: false
+  remove_trailing_period: false
+  writing_key_press_delay: 0.005
+recording_options:
+  activation_key: F17
+  allow_continuous_api: false
+  continuous_timeout: 10
+  input_backend: auto
+  llm_cleanup_key: null
+  llm_instruction_key: null
+  min_duration: 100
+  recording_mode: hold_to_record
+  sample_rate: 16000
+  silence_duration: 900
+  sound_device: 1
+  text_cleanup_key: null
