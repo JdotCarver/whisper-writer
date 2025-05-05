@@ -447,7 +447,7 @@ def post_process_transcription(transcription):
         else:
             print(f"[WARNING] File not found at: {rules_file}")
         rules = TextProcessor.load_find_replace_rules(rules_file)
-        print(f"[DEBUG] Loaded rules: {rules}")
+        #print(f"[DEBUG] Loaded rules: {rules}") #Not a very useful debug print.
         transcription = TextProcessor.apply_find_replace_rules(transcription, rules)
     
     # Apply other post-processing options
