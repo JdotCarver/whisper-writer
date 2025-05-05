@@ -33,11 +33,15 @@ model_options:
     openai_transcription_api_key: null
     provider: openai
   common:
-    initial_prompt: null
+    initial_prompt: TAS, Lila, HASS, FUTO, CUDA, Aegis, Lance, Krita, Notion, Chatty,
+      Lubing, Tasker, README, @Sorter, Revolut, YouTube, Myst, AutoCoach, Bitwarden,
+      OpenWebUI, the Stream, EventGhost, Foobar2000, @Task Master, WhisperWriter,
+      Louis Rossman, Streamer.bot, FreeFileSync, Game Inspector, Home Assistant, DeArrow,
+      Flow Launcher, mod .
     language: null
     temperature: 0.0
   local:
-    compute_type: default
+    compute_type: float32
     condition_on_previous_text: true
     device: cuda
     model: large-v3-turbo
@@ -46,12 +50,12 @@ model_options:
   use_api: false
 post_processing:
   add_trailing_space: true
-  clipboard_threshold: 1000
-  find_replace_file: ''
+  clipboard_threshold: 10
+  find_replace_file: W:/STREAM/SOFTWARE/Portable - WhisperWriter/whisper-writer-main/examples/regex-find-replace.json
   input_method: pynput
   remove_capitalization: false
   remove_trailing_period: false
-  writing_key_press_delay: 0.005
+  writing_key_press_delay: 0.003
 recording_options:
   activation_key: F17
   allow_continuous_api: false
@@ -59,7 +63,7 @@ recording_options:
   input_backend: auto
   llm_cleanup_key: null
   llm_instruction_key: null
-  min_duration: 100
+  min_duration: 1000
   recording_mode: hold_to_record
   sample_rate: 16000
   silence_duration: 900
