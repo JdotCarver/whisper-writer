@@ -18,7 +18,7 @@ def set_cuda_paths():
             if cuda_versions:
                 system_cuda_path = cuda_versions[0]  # Use the newest version
                 cuda_version = os.path.basename(system_cuda_path)[1:]  # Remove 'v' prefix
-                print(f'Found system CUDA version: {cuda_version}')
+                print(f'[DEBUG] Found system CUDA version: {cuda_version}')
                 
                 # Use system CUDA
                 paths_to_add = [
@@ -31,7 +31,7 @@ def set_cuda_paths():
                 if os.path.exists(cudnn_path):
                     paths_to_add.append(os.path.join(cudnn_path, 'bin'))
                 
-                print(f'Using system CUDA from: {system_cuda_path}')
+                print(f'[DEBUG] Using system CUDA from: {system_cuda_path}')
             else:
                 print('No CUDA 12.x installation found in system')
                 return check_bundled_cuda()
@@ -46,7 +46,7 @@ def set_cuda_paths():
             new_value = os.pathsep.join(paths_to_add + [current_value] if current_value else paths_to_add)
             os.environ[env_var] = new_value
             
-        print('CUDA paths set up successfully')
+        print('[DEBUG] CUDA paths set up successfully')
         
     except Exception as e:
         print(f'Error setting up CUDA paths: {e}')
@@ -80,6 +80,7 @@ def check_bundled_cuda():
         os.environ[env_var] = new_value
 
 # Set CUDA paths before anything else
+print('WhisperWriter Initiated')
 set_cuda_paths()
 
 print('Starting WhisperWriter...')
