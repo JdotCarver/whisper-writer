@@ -116,8 +116,10 @@ class TextProcessor:
                 rule_id = comment = ''
 
             if isinstance(find_term, Pattern):
+                # Create a replacement function that applies transformations
                 def replacement_func(match):
                     res = replace_term
+                    # Replace $1, $2 etc. with actual group contents
                     for i in range(len(match.groups()) + 1):
                         group_content = match.group(i) if i > 0 else match.group()
                         if group_content is None:
@@ -134,7 +136,9 @@ class TextProcessor:
                 result = find_term.sub(replacement_func, result)
                 if result != before and rule_id:
                     print(f"[Rule matched] ID: {rule_id} | {comment}")
+            
             else:
+                # Handle simple word replacements (preserve existing behavior)
                 words = result.split()
                 for i, word in enumerate(words):
                     stripped_word = word.strip('.,!?')
