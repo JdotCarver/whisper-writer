@@ -1,8 +1,79 @@
 [
     {
+        "id": "noun-casing-Markdown",
+        "comment": "Correct the capitalization of the markdown name. ",
+		"type": "regex",
+		"find": "(?i)markdown",
+		"replace": "Markdown"
+	},
+    {
+        "id": "noun-correct-OpenSource",
+		"type": "regex",
+		"find": "(?i)open[- ]?source",
+		"replace": "Open Source"
+	},
+    {
+        "id": "punct-quote-endquote",
+        "comment": "Brace 'quote ... endquote' sentences with quotation marks.",
         "type": "regex",
-        "find": "quote,?\\s+(.)(.+?)\\s+end\\s*quote,?",
-        "replace": "\"$1$2\"",
+        "find": "(?i)[,]?(\\s*)\\s*quote,?\\s*(.*?)[,.]?\\s+end\\s*quote[,.]?", 
+        "replace": "$1\"$2\"",
+        "transforms": [
+            {
+                "group": 2,
+                "operations": ["capitalize"]
+            }
+        ]
+    },
+    {
+        "id": "punct-quote-unquote",
+        "comment": "Brace 'quote ... unquote' sentences with quotation marks.",
+        "type": "regex",
+        "find": "(?i)[,]?(\\s*)\\s*quote,?\\s*(.*?)[,.]?\\s+unquote[,.]?",
+        "replace": "$1\"$2\"",
+        "transforms": [
+            {
+                "group": 2,
+                "operations": ["capitalize"]
+            }
+        ]
+    },
+    {
+        "id": "punct-slash",
+        "comment": "Convert 'slash' to a / character.",
+        "type": "regex",
+        "find": "(?i)\\bslash\\b",
+        "replace": "/",
+        "enabled": true
+    },
+    {
+        "id": "punct-backslash",
+        "comment": "Convert 'backslash' to a \\ character.",
+        "type": "regex",
+        "find": "(?i)\\bbackslash\\b",
+        "replace": "\\",
+        "enabled": true
+    },
+    {
+        "id": "md-todo",
+        "comment": "Input a markdown checkbox.",
+		"type": "regex",
+		"find": "(?i)^to\\sdo[,]?\\s*(.*)",
+		"replace": "[] $1",
+        "transforms": [
+            {
+                "group": 1,
+                "operations": ["capitalize"]
+            }
+        ]
+	},
+    {
+        "id": "md-header1",
+        "comment": "Convert 'Header OR Heading 1' to a Markdown Header H2 and remove end punctuation",
+        "type": "regex",
+        "find": "(?i)^(?:heading|header)\\s*1[.,]?\\s*(.*?)([.,]?)\\s*$",
+        "replace": "# $1",
+        "enabled": true,
         "transforms": [
             {
                 "group": 1,
@@ -11,8 +82,31 @@
         ]
     },
     {
+        "id": "md-header2",
+        "comment": "Convert 'Header OR Heading 2' to a Markdown Header H2 and remove end punctuation.",
         "type": "regex",
-        "find": "quote,?\\s+(.+?)\\s+(un)?quote,?",
-        "replace": "\"$1\""
+        "find": "(?i)^(?:heading|header)\\s*2[.,]?\\s*(.*?)([.,]?)\\s*$",
+        "replace": "## $1",
+        "enabled": true,
+        "transforms": [
+            {
+                "group": 1,
+                "operations": ["capitalize"]
+            }
+        ]
+    },
+    {
+        "id": "md-header3",
+        "comment": "Convert 'Header OR Heading 3' to a Markdown Header H2 and remove end punctuation",
+        "type": "regex",
+        "find": "(?i)^(?:heading|header)\\s*3[.,]?\\s*(.*?)([.,]?)\\s*$",
+        "replace": "### $1",
+        "enabled": true,
+        "transforms": [
+            {
+                "group": 1,
+                "operations": ["capitalize"]
+            }
+        ]
     }
 ]
